@@ -1,0 +1,4 @@
+---
+username: ubuntu
+
+docker_dir: /mnt/smokeping_storage

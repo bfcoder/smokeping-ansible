@@ -1,0 +1,6 @@
+[smokeping-server]
+192.168.42.8
+
+[smokeping-server:vars]
+ansible_ssh_user=ubuntu
+ansible_user=ubuntu

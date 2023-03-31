@@ -1,0 +1,31 @@
+---
+- name: Update packages
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+    upgrade: safe
+    autoremove: true
+
+- name: Install git-core
+  apt:
+    pkg: git-core
+    state: present
+    update_cache: true
+  become: yes
+
+- name: Install Vim
+  apt:
+    pkg: vim
+    state: present
+    update_cache: true
+  become: yes
+
+- name: Create app directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0755"
+  loop:
+    - "{{ docker_dir }}/smokeping"
+    - "{{ docker_dir }}/smokeping/config"
+    - "{{ docker_dir }}/smokeping/data"

@@ -1,0 +1,43 @@
+---
+- name: Create /opt/smokeping directory
+  file:
+    path: "/opt/smokeping"
+    state: directory
+    owner: "{{ansible_ssh_user}}"
+    group: "{{ansible_ssh_user}}"
+    mode: u=rwx,g=rwx,o=
+
+- name: Copy General
+  ansible.builtin.template:
+    src: General
+    dest: "{{ docker_dir }}/smokeping/config/General"
+
+- name: Copy Targets
+  ansible.builtin.template:
+    src: Targets
+    dest: "{{ docker_dir }}/smokeping/config/Targets"
+
+- name: Copy docker-compose.yml for web app
+  template:
+    src: docker-compose.yml
+    dest: /opt/smokeping/docker-compose.yml
+    owner: "{{ansible_ssh_user}}"
+    group: "{{ansible_ssh_user}}"
+    mode: u=rw,g=r,o=
+  become: yes
+
+- name: Copy smokeping service
+  template:
+    src: systemd/smokeping.service
+    dest: /etc/systemd/system/smokeping.service
+    owner: "{{ansible_ssh_user}}"
+    group: "{{ansible_ssh_user}}"
+    mode: u=rw,g=r,o=
+  become: yes
+
+- name: Enable smokeping service
+  systemd:
+    state: started
+    enabled: yes
+    daemon_reload: yes
+    name: smokeping
